@@ -39,6 +39,10 @@ public class TransientProbabilitiesCTMC {
         this.myCounter = ft;
     }
     
+    public void updateLambda(double l){
+    	this.myData.setLambda(l);
+    }
+    
     // Costruttore Dummy
     private TransientProbabilitiesCTMC(){}
     

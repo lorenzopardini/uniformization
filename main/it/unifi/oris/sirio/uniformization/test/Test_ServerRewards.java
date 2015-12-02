@@ -1,6 +1,7 @@
 package it.unifi.oris.sirio.uniformization.test;
 
 import it.unifi.oris.sirio.models.gspn.GSPNGraphAnalyzer;
+import it.unifi.oris.sirio.models.gspn.GSPNOperator;
 import it.unifi.oris.sirio.models.gspn.GSPNGraphGenerator;
 import it.unifi.oris.sirio.models.gspn.RateExpressionFeature;
 import it.unifi.oris.sirio.models.gspn.TransientAndSteadyMatrixes;
@@ -21,7 +22,7 @@ import it.unifi.oris.sirio.petrinet.MarkingCondition;
 import it.unifi.oris.sirio.petrinet.PetriNet;
 import it.unifi.oris.sirio.petrinet.Place;
 import it.unifi.oris.sirio.petrinet.Transition;
-import it.unifi.oris.sirio.uniformization.main.*;
+//import it.unifi.oris.sirio.uniformization.main.*;
 
 import java.awt.EventQueue;
 import java.io.BufferedWriter;
@@ -35,6 +36,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import it.unifi.oris.sirio.analyzer.graph.*;
+import it.unifi.oris.sirio.analyzer.log.AnalysisLogger;
+import it.unifi.oris.sirio.analyzer.log.AnalysisMonitor;
 import it.unifi.oris.sirio.math.OmegaBigDecimal;
 
 public class Test_ServerRewards {
@@ -139,40 +142,51 @@ public class Test_ServerRewards {
  
       public static void main(String args[]){
           
+    	  System.out.println("Avvio...");
+    	  
           // creazione della GSPN
           PetriNet net = new PetriNet();
           Marking marking = new Marking();
+          System.out.println("Creazione PN...");
           build(net,marking);
-          
+          System.out.println("Creazione PN... Fatto");
           //generazione della catena
           
+          System.out.println("Creazione graph...");
           SuccessionGraph graph = GSPNGraphGenerator.generateGraph(net, marking, null, null);
           // TBD: stopCondition null funziona?
+          System.out.println("Creazione graph... Fatto");
           
           // lancio l'analche??
           GSPNGraphAnalyzer analyzer = new GSPNGraphAnalyzer(graph, net);
+          System.out.println("Creazione graphAnalyzer... Fatto");
           
           Map<Node, Double> rootMap = GSPNGraphGenerator.calculateRootAbsorption(
                                       analyzer, graph.getRoot());
+          System.out.println("Creazione rootMap... Fatto");
           
           Map<SuccessionGraph,Double> mapOfGraphs = GSPNGraphGenerator.generateReducedGraphs(analyzer,
                                                       rootMap);
-          
+          System.out.println("Creazione MapOfGraph... Fatto");
+         
           // calcolo della matrice Q (generatore infinitesimale)
           double[][] Q = TransientAndSteadyMatrixes
                   .createInfinitesimalGeneratorForTransient(analyzer.getTangiblesStateList(),
                           mapOfGraphs);
-           
+          System.out.println("Creazione Q... Fatto"); 
+          
           // calcolo delle probabilita' iniziali
           double[] initialProbsVector = new double[Q.length];
           for (Node n : rootMap.keySet()) {
               initialProbsVector[analyzer.getTangiblesList().indexOf(n)] = rootMap.get(n)
                       .doubleValue();
           }
+          System.out.println("Calcolo initial Probs... Fatto");
           
           //calcolo del tasso
           double gamma = TransientAndSteadyMatrixes.findLambda(Q);
-
+          System.out.println("Lambda... Fatto");
+          
           double time = 15.0;
    
           double lambda = gamma * time;
@@ -181,13 +195,28 @@ public class Test_ServerRewards {
                   
           double[][] P = TransientAndSteadyMatrixes.createMatrixUniformized(Q, gamma);
                   
-          TransientProbabilitiesCTMC newSolution = TransientProbabilitiesCTMC.getFoxGlynnSolution(lambda, wantedAccuracy, P, initialProbsVector);
+          /*TransientProbabilitiesCTMC newSolution = TransientProbabilitiesCTMC.getFoxGlynnSolution(lambda, wantedAccuracy, P, initialProbsVector);
           TransientProbabilitiesCTMC oldSolution = TransientProbabilitiesCTMC.getOldSolution(lambda, wantedAccuracy, P, initialProbsVector);
                   
           double[] transientProbsNew = newSolution.getCtmcTransientProbabilitiesByUniformization();
           double[] transientProbsOld = oldSolution.getCtmcTransientProbabilitiesByUniformization();
-                  
-            
+           */
+          // nuovo
+          BigDecimal timeLimit = new BigDecimal("15.0");
+          BigDecimal step = new BigDecimal("0.1");
+          BigDecimal error = new BigDecimal("0.00000000001");
+          
+          System.out.println("Creo il GSPN Operator...");
+          GSPNOperator gspnOp = new GSPNOperator(timeLimit, step, error, net, marking, false, MarkingCondition.NONE, null, null); 
+          System.out.println("Creo il GSPN Operator... Fatto");
+          System.out.println("Eseguo getTransientS()...");
+          TransientSolution<Marking,Marking> solution = gspnOp.getTransientS();
+          System.out.println("Eseguo getTransientS()... Fatto");
+          boolean cumulative = false;
+          System.out.println("Calcolo Rewards...");
+          TransientSolution<Marking, RewardRate> rewards = TransientSolution.computeRewards(cumulative, solution, "Running;ToSwitchOn+On;Failed;");
+          System.out.println("Calcolo Rewards... Fatto");
+          /*  
        // start regenerative transient analysis 
           OmegaBigDecimal timeBound = new OmegaBigDecimal("60");
           BigDecimal step = new BigDecimal("1");
@@ -202,7 +231,7 @@ public class Test_ServerRewards {
           
           TransientSolution<DeterministicEnablingState, RewardRate> rewards = 
                   TransientSolution.computeRewards(false, solution, "Running");
-
+           */
           showPlot(rewards);
           
           
@@ -226,7 +255,7 @@ public class Test_ServerRewards {
           });
       }
 
-      public static void showPlot(TransientSolution<DeterministicEnablingState, RewardRate> rewards) {
+      public static void showPlot(TransientSolution<Marking, RewardRate> rewards) {
           final JPanel plot = TransientSolutionViewer.solutionChart(rewards);
           EventQueue.invokeLater(new Runnable() {
 
