@@ -196,9 +196,9 @@ public class Test_ServerRewards {
           double[][] P = TransientAndSteadyMatrixes.createMatrixUniformized(Q, gamma);
                   
           // nuovo
-          BigDecimal timeLimit = new BigDecimal("14.0");
+          BigDecimal timeLimit = new BigDecimal("15.0");
           BigDecimal step = new BigDecimal("0.1");
-          BigDecimal error = new BigDecimal("0.000000000001");
+          BigDecimal error = new BigDecimal("0.000000000000000001");
           
           System.out.println("Creo il GSPN Operator...");
           GSPNOperator gspnOp = new GSPNOperator(timeLimit, step, error, net, marking, false, MarkingCondition.NONE, null, null); 

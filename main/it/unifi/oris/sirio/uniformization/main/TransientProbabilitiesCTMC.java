@@ -43,6 +43,14 @@ public class TransientProbabilitiesCTMC {
     	this.myData.setLambda(l);
     }
     
+    public void updateAccuracy(double a){
+    	this.myData.setWantedAccuracy(a);
+    }
+    
+    public double getAccuracy(){
+    	return this.myData.getWantedAccuracy();
+    }
+    
     // Costruttore Dummy
     private TransientProbabilitiesCTMC(){}
     
@@ -165,7 +173,9 @@ public class TransientProbabilitiesCTMC {
             // Il finder ha fallito. L'algoritmo di Fox&Glynn non è applicabile.
             // TEST
             System.out.println("CalculatePiGrecoCTMTC - Finder failed");
-            return this.getNUllVector(myData.getInitialProbsVector().length);
+            //System.out.println(myData.toString());
+            return null;
+            //return this.getNUllVector(myData.getInitialProbsVector().length);
         }
         
        myData = this.myWeighter.weighter(myData);
@@ -182,7 +192,8 @@ public class TransientProbabilitiesCTMC {
         if(this.myData.getFoxGlynnFlagF() == Boolean.FALSE){
             // Il weighter ha fallito. L'algoritmo di Fox&Glynn non è applicabile.
             //System.out.println("CalculatePiGrecoCTMTC - Weighter failed");
-        	return this.getNUllVector(myData.getInitialProbsVector().length);
+        	return null;
+        	//return this.getNUllVector(myData.getInitialProbsVector().length);
         }
         
         // Qui devo invocare la funzione per avere i pigreco fino a R
@@ -197,9 +208,10 @@ public class TransientProbabilitiesCTMC {
         return new Pair<Integer,Integer>(Integer.valueOf(myData.getL().intValue()),Integer.valueOf(myData.getR().intValue()));
     }
     
-    private double[] getNUllVector(int length){
-    	double[] ret = new double[length];
-    	for(int i=0; i<length; i++) ret[i]=0.0;
+    public double[] getNUllVector(){
+    	int l = this.myData.getCmtcTransientProbs().length;
+    	double[] ret = new double[l];
+    	for(int i=0; i<l; i++) ret[i]=0.0;
     	return ret;
     }
 }

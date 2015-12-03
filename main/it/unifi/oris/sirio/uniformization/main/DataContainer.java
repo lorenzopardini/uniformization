@@ -127,5 +127,22 @@ public class DataContainer {
     public void setInitialProbsVector(double[] root) {
         this.initialProbsVector = root;
     }
+    
+    public String toString(){
+    	String out = new String();
+    	out+="|-----DataContainer------";
+    	out+="\n|lambda=";
+    	out+=Double.valueOf(this.lambda).toString();
+    	out+="\n|Left Truncation Point=";
+    	out+=this.L.toString();
+    	out+="\n|Right Truncation Point=";
+    	out+=this.L.toString();
+    	out+="\n|FoxGlynn Falg F=";
+    	out+=this.foxGlynnFlagF.toString();
+    	out+="\n|wanted accuracy=";
+    	out+=Double.valueOf(this.wantedAccuracy).toString();
+    	out+="\n|------------------------";
+    	return out;
+    }
 
 }

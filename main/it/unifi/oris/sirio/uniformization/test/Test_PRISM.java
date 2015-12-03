@@ -39,7 +39,8 @@ public class Test_PRISM {
         
         //TEST JUnit
         for(int i=0; i<ret.length; i++){
-            assertTrue(Math.abs(ret[i]-prism[i])<wantedAccuracy);	
+            assertTrue(Math.abs(ret[i]-prism[i])<wantedAccuracy);
+            System.out.println(Math.abs(ret[i]-prism[i]));
         }
         
 	}
