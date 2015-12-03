@@ -195,16 +195,10 @@ public class Test_ServerRewards {
                   
           double[][] P = TransientAndSteadyMatrixes.createMatrixUniformized(Q, gamma);
                   
-          /*TransientProbabilitiesCTMC newSolution = TransientProbabilitiesCTMC.getFoxGlynnSolution(lambda, wantedAccuracy, P, initialProbsVector);
-          TransientProbabilitiesCTMC oldSolution = TransientProbabilitiesCTMC.getOldSolution(lambda, wantedAccuracy, P, initialProbsVector);
-                  
-          double[] transientProbsNew = newSolution.getCtmcTransientProbabilitiesByUniformization();
-          double[] transientProbsOld = oldSolution.getCtmcTransientProbabilitiesByUniformization();
-           */
           // nuovo
-          BigDecimal timeLimit = new BigDecimal("15.0");
+          BigDecimal timeLimit = new BigDecimal("14.0");
           BigDecimal step = new BigDecimal("0.1");
-          BigDecimal error = new BigDecimal("0.00000000001");
+          BigDecimal error = new BigDecimal("0.000000000001");
           
           System.out.println("Creo il GSPN Operator...");
           GSPNOperator gspnOp = new GSPNOperator(timeLimit, step, error, net, marking, false, MarkingCondition.NONE, null, null); 
@@ -216,22 +210,7 @@ public class Test_ServerRewards {
           System.out.println("Calcolo Rewards...");
           TransientSolution<Marking, RewardRate> rewards = TransientSolution.computeRewards(cumulative, solution, "Running;ToSwitchOn+On;Failed;");
           System.out.println("Calcolo Rewards... Fatto");
-          /*  
-       // start regenerative transient analysis 
-          OmegaBigDecimal timeBound = new OmegaBigDecimal("60");
-          BigDecimal step = new BigDecimal("1");
-          BigDecimal error = BigDecimal.ZERO;
-          TransientSolution<DeterministicEnablingState, Marking> solution = RegenerativeTransientAnalysis
-                  .compute(net, new DeterministicEnablingState(marking, net),
-                          new DeterministicEnablingStateBuilder(net, true),
-                          new EnablingSyncsEvaluator(),
-                          new TruncationPolicy(error, new OmegaBigDecimal(timeBound)), false, false)
-                  .solveDiscretizedMarkovRenewal(timeBound.bigDecimalValue(), step,
-                          MarkingCondition.ANY, false, null, null);
           
-          TransientSolution<DeterministicEnablingState, RewardRate> rewards = 
-                  TransientSolution.computeRewards(false, solution, "Running");
-           */
           showPlot(rewards);
           
           

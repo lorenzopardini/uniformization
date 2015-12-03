@@ -182,7 +182,7 @@ public class Test_Server {
               //System.out.println(gamma);
               double TIME_MAX = 40.0;
               double STEP = 0.01;
-              for(time = 39.9; time<TIME_MAX; time+=STEP){
+              //for(time = 39.9; time<TIME_MAX; time+=STEP){
               //for(double exp=1.0; exp<25.0; exp+=1.0){    
                   double lambda = gamma * time;
                   
@@ -202,11 +202,12 @@ public class Test_Server {
                   double sumOld = 0.0;
                   double sumNew = 0.0;
                   System.out.println(transientProbsNew.length);
-                  /*for(int j=0; j<transientProbsOld.length; j++){ 
+                  for(int j=0; j<transientProbsOld.length; j++){ 
                       sumOld+=transientProbsOld[j];
                       sumNew+=transientProbsNew[j];
-                  }*/
+                  }
 
+                  
                   //time2 = System.currentTimeMillis();
                   out += Double.valueOf(sumNew).toString() + ",";
                   out += Double.valueOf(sumOld).toString();
@@ -215,9 +216,9 @@ public class Test_Server {
                   
                   out += "\n";
                   
-                  writer.write(out);
+                  //writer.write(out);
 
-           }//END FOR
+          // }//END FOR
               
           }catch(Exception e) {
               e.printStackTrace();
