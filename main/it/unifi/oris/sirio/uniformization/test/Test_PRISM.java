@@ -1,6 +1,8 @@
 package it.unifi.oris.sirio.uniformization.test;
 
 import it.unifi.oris.sirio.uniformization.main.TransientProbabilitiesCTMC;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 public class Test_PRISM {
 
@@ -34,12 +36,10 @@ public class Test_PRISM {
         System.out.println("lambda = "+lambda);
         
         System.out.println("\n piGreco CTMC: \n");
+        
+        //TEST JUnit
         for(int i=0; i<ret.length; i++){
-            if(Math.abs(ret[i]-prism[i])<wantedAccuracy){
-            	System.out.println("Precision OK! " + Math.abs(ret[i]-prism[i]));
-            }else{
-            	System.out.println("Precision NOT OK! =(");
-            }
+            assertTrue(Math.abs(ret[i]-prism[i])<wantedAccuracy);	
         }
         
 	}
